@@ -14,3 +14,4 @@ SchülerInnen können eins oder mehrere Schulfächer zugeordnet werden, die man 
 ## Bilanzen
 * Über die Funktion `sf_Jahreseinnahme` und `sf_Monatseinnahme` kann der Jahres- bzw. Monatsverdienst abgefragt werden.
   Der Preis pro Einheit ist als konstanten Wert vorauszusetzen.
+* Über Python werdend tabellarische und bald auch grafisch aufbereitete HTML-Ausgaben erzeugt.
