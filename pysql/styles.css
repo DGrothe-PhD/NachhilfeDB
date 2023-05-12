@@ -1,0 +1,29 @@
+.dataframe{
+	font-family:Calibri;
+}
+
+body{
+	font-family:Calibri;
+}
+	
+
+td{
+	text-align:right;
+	padding:0.5em;
+}
+
+td:nth-child(4){
+	text-align:left;
+	padding-right:3em;
+}
+
+table, th, td{
+	border: 1px solid gray;
+	border-collapse: collapse;
+}
+tr:nth-child(even){
+	background-color: lavender;
+}
+tr:hover{
+	background-color: darkseagreen;
+}
