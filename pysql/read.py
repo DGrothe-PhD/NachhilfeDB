@@ -13,41 +13,40 @@ import pandas as pd
 
 app = Dash(__name__)
 
-conn = pyodbc.connect(
-    'Driver={SQL Server};'
-    'Server=len5\SQLEXPRESS;'
-    'Database=Nachhilfe;'
-    'Trusted_Connection=yes;'
-    )
-
-# params
-
-
-def read(conn, what):
-    print("Read")
-    cursor = conn.cursor()
-    cursor.execute(f"select * from [Nachhilfe].[dbo].[{what}]")
-    allrows = cursor.fetchall()
-    for row in allrows:
-        print(f'row = {row}')
-        print()
 
 class monthlytable:
     fig = ""
     titleline = ""
     month_from = 0
     month_to = 0
-
+    
+    conn = pyodbc.connect(
+        'Driver={SQL Server};'
+        'Server=len5\SQLEXPRESS;'
+        'Database=Nachhilfe;'
+        'Trusted_Connection=yes;'
+    )
+    
     monate = ["","Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", \
      "August", "September", "Oktober", "November", "Dezember"]
- 
+    
+    
+    def read(self, what):
+        print("Read")
+        cursor = self.conn.cursor()
+        cursor.execute(f"select * from [Nachhilfe].[dbo].[{what}]")
+        allrows = cursor.fetchall()
+        for row in allrows:
+            print(f'row = {row}')
+            print()
+    
     def set_title(self, year, m_from, m_to):
         self.titleline += f"Monatsabrechnung für {year} von {self.monate[m_from]} bis {self.monate[m_to]}"
   
-    def Teilsumme(self, conn, year, m_from, m_to):
+    def Teilsumme(self, year, m_from, m_to):
         self.set_title(year, m_from, m_to)
         print(self.titleline)
-        cursor = conn.cursor()
+        cursor = self.conn.cursor()
         #
         monthlyquery = f"SELECT TOP(100) PERCENT [Monat],[Jahr],[SchülerIn],[Expr1] AS Einheiten" + \
          " FROM [Nachhilfe].[dbo].[EinheitenMonatAlphabetisch]" + \
@@ -97,17 +96,15 @@ def formatter():
         )
     ])
 
+
 # Execution	  
-read(conn, "tb_Fachbelegung")
-
-print("\n=====================\n\n")
-
-read(conn, "Belegungsplan")
-
-print("\n=====================\n\n")
 
 if __name__ == '__main__':
     mtt = monthlytable()
-    mtt.Teilsumme(conn, 2023, 1, 5)
+    mtt.read("tb_Fachbelegung")
+    print("\n=====================\n\n")
+    mtt.read("Belegungsplan")
+    #
+    mtt.Teilsumme( 2023, 1, 5)
     #formatter()
     #app.run_server(debug=True)
