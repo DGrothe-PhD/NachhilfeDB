@@ -15,4 +15,7 @@ Es wird auch die Unterrichtsart (online oder vor Ort) zu einem Auftrag gespeiche
 ## Bilanzen
 * Über die Funktion `sf_Jahreseinnahme` und `sf_Monatseinnahme` kann der Jahres- bzw. Monatsverdienst abgefragt werden.
   Der Preis pro Einheit ist als konstanten Wert vorauszusetzen.
-* Über Python werdend tabellarische und bald auch grafisch aufbereitete HTML-Ausgaben erzeugt.
+* Über Python werdend tabellarische und auch grafisch aufbereitete HTML-Ausgaben erzeugt.
+
+### Beispiele
+![uu](doc/images/Monatsabrechnung.png)
