@@ -19,6 +19,7 @@ class monthlytable:
     titleline = ""
     month_from = 0
     month_to = 0
+    year = 0
     
     conn = pyodbc.connect(
         'Driver={SQL Server};'
@@ -41,9 +42,11 @@ class monthlytable:
             print()
     
     def set_title(self, year, m_from, m_to):
+        self.year = year
         self.titleline += f"Monatsabrechnung für {year} von {self.monate[m_from]} bis {self.monate[m_to]}"
   
     def Teilsumme(self, year, m_from, m_to):
+        self.year = year
         self.set_title(year, m_from, m_to)
         print(self.titleline)
         cursor = self.conn.cursor()
@@ -78,23 +81,28 @@ class monthlytable:
             f.write(printabledataframe.to_html())
             f.write("</body></html>")
         
-        # Later used, this shall stick around here
-        #fig = px.bar(df, x="SchülerIn", y="Einheiten", color="Monat", barmode="group")
+        # Plotting
+        self.fig = px.bar(printabledataframe, x="Monat", y="Einheiten", color="SchülerIn", barmode="stack")
+        #barmode = 'group'
+        #self.fig.update_layout(font_family="Calibri")
+    
+    def formatter(self):
+        app.layout = html.Div(
+            style={"font-family": "Calibri"},
+            children=[
+            html.H1(
+            style={"font-family": "Calibri"},
+            children=f"Monatsabrechnung für {self.year}"),
 
+            html.Div(children='''
+                Aufgeteilt nach Schülern
+            '''),
 
-def formatter():
-    app.layout = html.Div(children=[
-        html.H1(children='Hello Dash'),
-
-        html.Div(children='''
-            Dash: A web application framework for your data.
-        '''),
-
-        dcc.Graph(
-            id='example-graph',
-            figure=fig
-        )
-    ])
+            dcc.Graph(
+                id ='nachhilfe-graph1',
+                figure = self.fig
+            )
+        ])
 
 
 # Execution	  
@@ -106,5 +114,5 @@ if __name__ == '__main__':
     mtt.read("Belegungsplan")
     #
     mtt.Teilsumme( 2023, 1, 5)
-    #formatter()
-    #app.run_server(debug=True)
+    mtt.formatter()
+    app.run_server(debug=True)
