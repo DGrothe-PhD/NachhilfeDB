@@ -5,6 +5,7 @@
 # while SSMS 2019 is running
 import numpy
 import pyodbc
+from colorthemes import colorthemes as ct
 
 # -- plotly imports
 from dash import Dash, html, dcc
@@ -82,7 +83,12 @@ class monthlytable:
             f.write("</body></html>")
         
         # Plotting
-        self.fig = px.bar(printabledataframe, x="Monat", y="Einheiten", color="SchülerIn", barmode="stack")
+        self.fig = px.bar(
+            printabledataframe,
+            x="Monat", y="Einheiten", color="SchülerIn",
+            barmode="stack",
+            color_discrete_sequence=ct.bluegreenpalette
+        )
         #barmode = 'group'
         #self.fig.update_layout(font_family="Calibri")
     

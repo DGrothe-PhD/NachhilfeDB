@@ -5,3 +5,4 @@ References
 3. Plotly/Dash for Python https://github.com/plotly/dash
 4. Dash in 20 Minutes Tutorial https://dash.plotly.com/tutorial
 5. Stackoverflow [Cursor fetchall to py DataFrame](https://stackoverflow.com/questions/63338790/how-to-convert-cursor-fetchall-to-python-data-frame)
+6. Colors https://matplotlib.org/stable/gallery/color/named_colors.html
