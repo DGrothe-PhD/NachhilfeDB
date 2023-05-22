@@ -10,13 +10,16 @@ from colorthemes import colorthemes as ct
 # -- plotly imports
 from dash import Dash, html, dcc
 import plotly.express as px
+import plotly.graph_objects as go
+import plotly.offline as pyo
+
 import pandas as pd
 
 app = Dash(__name__)
 
 
 class monthlytable:
-    fig = ""
+    plots = []
     titleline = ""
     month_from = 0
     month_to = 0
@@ -44,7 +47,49 @@ class monthlytable:
     
     def set_title(self, year, m_from, m_to):
         self.year = year
-        self.titleline += f"Monatsabrechnung für {year} von {self.monate[m_from]} bis {self.monate[m_to]}"
+        self.titleline = f"Monatsabrechnung für {year} von {self.monate[m_from]} bis {self.monate[m_to]}"
+  
+    def ThisMonthLessons(self, year, selected_month = 0):
+        self.year = year
+        monthintitle = f"{self.monate[selected_month]} " if selected_month else ""
+        monthannex = f"_{self.monate[selected_month]}" if selected_month else ""
+        self.titleline = f"Monatsunterricht für {monthintitle}{year}"
+        
+        print(self.titleline)
+        cursor = self.conn.cursor()
+        #
+        filtertext = f"AND MONTH(Datum) = {selected_month}" if selected_month else ""
+        
+        allquery = f"SELECT TOP (100) PERCENT [Datum],[Einheiten],[SchuelerIn],[Bezeichnung] " + \
+         f"FROM [Nachhilfe].[dbo].[MANachFach] " + \
+         f"WHERE year(Datum) = {year} {filtertext} " + \
+         f"ORDER BY Datum ASC"
+        
+        cursor.execute(allquery)
+        column_Names  = cursor.description
+        allrows = cursor.fetchall()
+        result = [{column_Names[index][0]: column for index, column in enumerate(value)} for value in allrows]
+        
+        printabledataframe = pd.DataFrame(result, columns=["Datum", "SchuelerIn", "Einheiten", "Bezeichnung"])
+        print(printabledataframe)
+        
+        with open(f"Monatstermine_{year}{monthannex}.html", 'w', encoding='utf-8') as f:
+            f.write("<html><title>Monatsabrechnung</title>\r\n")
+            f.write(""" <link rel="stylesheet" href="styles.css"> """)
+            f.write("<body><h1>"+self.titleline+"</h1>\r\n")
+            f.write(printabledataframe.to_html())
+            f.write("</body></html>")
+        '''
+        # Plotting later
+        fig2 = px.bar(
+            printabledataframe,
+            x="Monat", y="Einheiten", color="SchuelerIn",
+            barmode="stack",
+            color_discrete_sequence=ct.bluegreenpalette
+        )
+        self.plots.append(fig2)'''
+        #barmode = 'group'
+        #self.fig.update_layout(font_family="Calibri")
   
     def SummaryGivenLessons(self, year, m_from, m_to):
         self.year = year
@@ -52,10 +97,10 @@ class monthlytable:
         print(self.titleline)
         cursor = self.conn.cursor()
         #
-        monthlyquery = f"SELECT TOP(100) PERCENT [Monat],[Jahr],[SchülerIn],[Expr1] AS Einheiten" + \
+        monthlyquery = f"SELECT TOP(100) PERCENT [Monat],[Jahr],[SchuelerIn],[Expr1] AS Einheiten" + \
          " FROM [Nachhilfe].[dbo].[EinheitenMonatAlphabetisch]" + \
          f" WHERE Jahr = {year} AND Monat BETWEEN {m_from} AND {m_to}" + \
-         " ORDER BY Monat ASC, SchülerIn ASC;"
+         " ORDER BY Monat ASC, SchuelerIn ASC;"
         #
         cursor.execute(monthlyquery)
         column_Names  = cursor.description
@@ -67,7 +112,7 @@ class monthlytable:
         allrows = cursor.fetchall()
         result = [{column_Names[index][0]: column for index, column in enumerate(value)} for value in allrows]
         
-        printabledataframe = pd.DataFrame(result, columns=["Monat", "Jahr", "SchülerIn", "Einheiten"])
+        printabledataframe = pd.DataFrame(result, columns=["Monat", "Jahr", "SchuelerIn", "Einheiten"])
         print(printabledataframe)
         
         with open(f"Monatsabrechnung_{year}_{m_from}-{m_to}.html", 'w', encoding='utf-8') as f:
@@ -78,17 +123,19 @@ class monthlytable:
             f.write("</body></html>")
         
         # Plotting
-        self.fig = px.bar(
+        fig1 = px.bar(
             printabledataframe,
-            x="Monat", y="Einheiten", color="SchülerIn",
+            x="Monat", y="Einheiten", color="SchuelerIn",
             barmode="stack",
             color_discrete_sequence=ct.bluegreenpalette
         )
+        self.plots.append(fig1)
         #barmode = 'group'
         #self.fig.update_layout(font_family="Calibri")
     
     def formatter(self):
         app.layout = html.Div(
+            [html.Div(
             style={"font-family": "Calibri"},
             children=[
             html.H1(
@@ -96,14 +143,16 @@ class monthlytable:
             children=f"Monatsabrechnung für {self.year}"),
 
             html.Div(children='''
-                Aufgeteilt nach Schülern
+                Aufgeteilt nach Schuelern
             '''),
 
             dcc.Graph(
                 id ='nachhilfe-graph1',
-                figure = self.fig
+                figure = x_fig
             )
-        ])
+        ]) for x_fig in self.plots],
+        style = {'margin-right' : '0px'}
+        )
 
 
 # Execution	  
@@ -115,5 +164,6 @@ if __name__ == '__main__':
     #mtt.read("Belegungsplan")
     #
     mtt.SummaryGivenLessons( 2023, 1, 5)
+    mtt.ThisMonthLessons(2023, 5)
     mtt.formatter()
     app.run_server(debug=True)

@@ -1,20 +1,18 @@
 USE [Nachhilfe]
 GO
 
-/****** Object:  View [dbo].[MANachFach]    Script Date: 22.05.2023 20:01:05 ******/
+/****** Object:  View [dbo].[EinheitenMonatAlphabetisch]    Script Date: 22.05.2023 20:00:35 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE VIEW [dbo].[MANachFach]
+CREATE VIEW [dbo].[EinheitenMonatAlphabetisch]
 AS
-SELECT dbo.tb_Unterricht.Datum, dbo.tb_Unterricht.Einheiten, concat_ws(', ', dbo.tb_Schueler.Name, dbo.tb_Schueler.Vorname) AS SchuelerIn, dbo.tb_Faecher.Bezeichnung
-FROM     dbo.tb_Unterricht INNER JOIN
-                  dbo.tb_Fachbelegung ON dbo.tb_Fachbelegung.FachBelegID = dbo.tb_Unterricht.FachbelegungID INNER JOIN
-                  dbo.tb_Faecher ON dbo.tb_Fachbelegung.FachID = dbo.tb_Faecher.FachID INNER JOIN
-                  dbo.tb_Schueler ON dbo.tb_Fachbelegung.SchuelerID = dbo.tb_Schueler.SchuelerID
+SELECT MONTH(Datum) AS Monat, YEAR(Datum) AS Jahr, SchuelerIn, SUM(Einheiten) AS Expr1
+FROM     dbo.MANachFach
+GROUP BY YEAR(Datum), MONTH(Datum), SchuelerIn
 GO
 
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
@@ -88,42 +86,12 @@ Begin DesignProperties =
          Left = 0
       End
       Begin Tables = 
-         Begin Table = "tb_Unterricht"
+         Begin Table = "MANachFach"
             Begin Extent = 
-               Top = 5
-               Left = 14
-               Bottom = 135
-               Right = 189
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
-         Begin Table = "tb_Fachbelegung"
-            Begin Extent = 
-               Top = 78
-               Left = 435
-               Bottom = 191
-               Right = 602
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
-         Begin Table = "tb_Faecher"
-            Begin Extent = 
-               Top = 8
-               Left = 632
-               Bottom = 121
-               Right = 799
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
-         Begin Table = "tb_Schueler"
-            Begin Extent = 
-               Top = 148
-               Left = 198
-               Bottom = 278
-               Right = 365
+               Top = 7
+               Left = 48
+               Bottom = 252
+               Right = 371
             End
             DisplayFlags = 280
             TopColumn = 0
@@ -139,7 +107,7 @@ Begin DesignProperties =
          Width = 284
          Width = 1200
          Width = 1200
-         Width = 1200
+         Width = 1680
          Width = 1200
          Width = 1200
          Width = 1200
@@ -148,8 +116,8 @@ Begin DesignProperties =
       End
    End
    Begin CriteriaPane = 
-      Begin ColumnWidths = 11
-         Column = 1440
+      Begin ColumnWidths = 12
+         Column = 4176
          Alias = 900
          Table = 1176
          Output = 720
@@ -158,19 +126,16 @@ Begin DesignProperties =
          SortType = 1356
          SortOrder = 1416
          GroupBy = 1350
-         Filter = 1356
+         Filter = 2316
          Or = 1350
          Or = 1350
-         Or ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'MANachFach'
-GO
-
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'= 1350
+         Or = 1350
       End
    End
 End
-' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'MANachFach'
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'EinheitenMonatAlphabetisch'
 GO
 
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=2 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'MANachFach'
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'EinheitenMonatAlphabetisch'
 GO
 
