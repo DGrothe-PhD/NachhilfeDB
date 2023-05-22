@@ -46,7 +46,7 @@ class monthlytable:
         self.year = year
         self.titleline += f"Monatsabrechnung für {year} von {self.monate[m_from]} bis {self.monate[m_to]}"
   
-    def Teilsumme(self, year, m_from, m_to):
+    def SummaryGivenLessons(self, year, m_from, m_to):
         self.year = year
         self.set_title(year, m_from, m_to)
         print(self.titleline)
@@ -67,11 +67,6 @@ class monthlytable:
         allrows = cursor.fetchall()
         result = [{column_Names[index][0]: column for index, column in enumerate(value)} for value in allrows]
         
-        #for row in allrows:
-        #    print(f'row = {row}')
-        #    print()
-        
-        #print(pd.DataFrame(allrows, columns=["Monat", "Jahr", "SchülerIn", "Einheiten"]))
         printabledataframe = pd.DataFrame(result, columns=["Monat", "Jahr", "SchülerIn", "Einheiten"])
         print(printabledataframe)
         
@@ -115,10 +110,10 @@ class monthlytable:
 
 if __name__ == '__main__':
     mtt = monthlytable()
-    mtt.read("tb_Fachbelegung")
+    #mtt.read("tb_Fachbelegung")
     print("\n=====================\n\n")
-    mtt.read("Belegungsplan")
+    #mtt.read("Belegungsplan")
     #
-    mtt.Teilsumme( 2023, 1, 5)
+    mtt.SummaryGivenLessons( 2023, 1, 5)
     mtt.formatter()
     app.run_server(debug=True)
