@@ -48,11 +48,11 @@ class monthlytable:
     def set_title(self, year, m_from, m_to):
         self.year = year
         self.titleline = f"Monatsabrechnung für {year} von {self.monate[m_from]} bis {self.monate[m_to]}"
-  
+    
     def ThisMonthLessons(self, year, selected_month = 0):
         self.year = year
         monthintitle = f"{self.monate[selected_month]} " if selected_month else ""
-        monthannex = f"_{self.monate[selected_month]}" if selected_month else ""
+        self.monthannex = f"_{self.monate[selected_month]}" if selected_month else ""
         self.titleline = f"Monatsunterricht für {monthintitle}{year}"
         
         print(self.titleline)
@@ -70,27 +70,40 @@ class monthlytable:
         allrows = cursor.fetchall()
         result = [{column_Names[index][0]: column for index, column in enumerate(value)} for value in allrows]
         
-        printabledataframe = pd.DataFrame(result, columns=["Datum", "SchuelerIn", "Einheiten", "Bezeichnung"])
-        print(printabledataframe)
+        self.monthlySubjectsDataFrame = pd.DataFrame(
+            result, 
+            columns=["Datum", "SchuelerIn", "Einheiten", "Bezeichnung"]
+        )
+        pass
+    
+    
+    # Write dataframe as table
+    def printMonthly(self):
+        print(self.monthlySubjectsDataFrame)
         
-        with open(f"Monatstermine_{year}{monthannex}.html", 'w', encoding='utf-8') as f:
+        with open(f"Monatstermine_{self.year}{self.monthannex}.html", 'w', encoding='utf-8') as f:
             f.write("<html><title>Monatsabrechnung</title>\r\n")
             f.write(""" <link rel="stylesheet" href="styles.css"> """)
             f.write("<body><h1>"+self.titleline+"</h1>\r\n")
-            f.write(printabledataframe.to_html())
+            f.write(self.monthlySubjectsDataFrame.to_html())
             f.write("</body></html>")
-        '''
-        # Plotting later
-        fig2 = px.bar(
-            printabledataframe,
-            x="Monat", y="Einheiten", color="SchuelerIn",
-            barmode="stack",
-            color_discrete_sequence=ct.bluegreenpalette
+        pass
+    
+    # Pie chart
+    def makePieChartSubjects(self, year):
+        # Pie chart is for whole year. Query for data of whole year
+        self.ThisMonthLessons(year)
+        df = self.monthlySubjectsDataFrame.groupby(['Bezeichnung'])['Einheiten'].sum().reset_index()
+        fig2 = px.pie(
+            df,
+            values = "Einheiten",
+            names = "Bezeichnung",
+            title = f"Anteil der Fächer im Jahr {year}",
+            color_discrete_sequence = ct.bluegreenpalette
         )
-        self.plots.append(fig2)'''
-        #barmode = 'group'
-        #self.fig.update_layout(font_family="Calibri")
-  
+        self.plots.append(fig2)
+        pass
+    
     def SummaryGivenLessons(self, year, m_from, m_to):
         self.year = year
         self.set_title(year, m_from, m_to)
@@ -104,39 +117,38 @@ class monthlytable:
         #
         cursor.execute(monthlyquery)
         column_Names  = cursor.description
-       
-        # DataFrame directly from pandas@sql: requires sqlalchemy
-        # df = pd.read_sql(monthlyquery, conn)
-        # so instead I just
         
         allrows = cursor.fetchall()
         result = [{column_Names[index][0]: column for index, column in enumerate(value)} for value in allrows]
         
-        printabledataframe = pd.DataFrame(result, columns=["Monat", "Jahr", "SchuelerIn", "Einheiten"])
-        print(printabledataframe)
+        self.GivenLessonsDataFrame = pd.DataFrame(result, columns=["Monat", "Jahr", "SchuelerIn", "Einheiten"])
+        print(self.GivenLessonsDataFrame)
         
         with open(f"Monatsabrechnung_{year}_{m_from}-{m_to}.html", 'w', encoding='utf-8') as f:
             f.write("<html><title>Monatsabrechnung</title>\r\n")
             f.write(""" <link rel="stylesheet" href="styles.css"> """)
             f.write("<body><h1>"+self.titleline+"</h1>\r\n")
-            f.write(printabledataframe.to_html())
+            f.write(self.GivenLessonsDataFrame.to_html())
             f.write("</body></html>")
+        pass
         
-        # Plotting
+        
+    def makePlotGivenLessons(self):
         fig1 = px.bar(
-            printabledataframe,
+            self.GivenLessonsDataFrame,
             x="Monat", y="Einheiten", color="SchuelerIn",
             barmode="stack",
             color_discrete_sequence=ct.bluegreenpalette
         )
         self.plots.append(fig1)
-        #barmode = 'group'
-        #self.fig.update_layout(font_family="Calibri")
+        pass
+    
     
     def formatter(self):
+        div_widths = ["50%", "25%"]
         app.layout = html.Div(
             [html.Div(
-            style={"font-family": "Calibri"},
+            style={"font-family": "Calibri", "width": div_widths[idx]},
             children=[
             html.H1(
             style={"font-family": "Calibri"},
@@ -147,10 +159,10 @@ class monthlytable:
             '''),
 
             dcc.Graph(
-                id ='nachhilfe-graph1',
+                id = f"nachhilfe-graph{idx}",
                 figure = x_fig
             )
-        ]) for x_fig in self.plots],
+        ]) for idx, x_fig in enumerate(self.plots)],
         style = {'margin-right' : '0px'}
         )
 
@@ -164,6 +176,11 @@ if __name__ == '__main__':
     #mtt.read("Belegungsplan")
     #
     mtt.SummaryGivenLessons( 2023, 1, 5)
+    mtt.makePlotGivenLessons()
+    #
     mtt.ThisMonthLessons(2023, 5)
+    mtt.printMonthly()
+    #
+    mtt.makePieChartSubjects(2023)
     mtt.formatter()
     app.run_server(debug=True)
