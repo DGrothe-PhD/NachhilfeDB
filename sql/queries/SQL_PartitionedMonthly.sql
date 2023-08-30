@@ -40,13 +40,3 @@ SELECT TOP(100) PERCENT
 FROM Concatenated
 WHERE Zeile = BCount
 ORDER BY Datum, SchuelerIn, Bezeichnung
-
-
-SELECT TOP (1000) [TerminID]
-      ,[Datum]
-      ,[Einheiten]
-      ,[SchuelerIn]
-      ,[Bezeichnung]
-  FROM [Nachhilfe].[dbo].[MANachFach]
-  ORDER BY Datum, SchuelerIn, 
-			 Bezeichnung
