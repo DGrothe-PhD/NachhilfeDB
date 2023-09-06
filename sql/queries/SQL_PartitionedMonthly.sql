@@ -35,8 +35,9 @@ Concatenated AS (
 			AND P.Zeile = C.Zeile + 1
 )
 
+-- Order by year & month first for quick overview
 SELECT TOP(100) PERCENT
     Datum, EINH as Einheiten, SchuelerIn, Unterricht
 FROM Concatenated
 WHERE Zeile = BCount
-ORDER BY Datum, SchuelerIn, Bezeichnung
+ORDER BY year(Datum), month(datum), SchuelerIn, Datum, Unterricht
