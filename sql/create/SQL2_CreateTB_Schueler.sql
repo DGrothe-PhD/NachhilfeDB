@@ -1,7 +1,7 @@
 USE [Nachhilfe]
 GO
 
-/****** Object:  Table [dbo].[tb_Schueler]    Script Date: 08.03.2023 12:13:45 ******/
+/****** Object:  Table [dbo].[tb_Schueler]    Script Date: 08.09.2023 21:37:59 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -25,10 +25,20 @@ CREATE TABLE [dbo].[tb_Schueler](
 	[MobilSchueler] [varchar](20) NULL,
 	[EMail1] [varchar](30) NULL,
 	[EMail2] [varchar](30) NULL,
+	[Geburtsdatum] [date] NULL,
  CONSTRAINT [PK_tb_Schueler] PRIMARY KEY CLUSTERED 
 (
 	[SchuelerID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tb_Schueler]  WITH CHECK ADD  CONSTRAINT [CK_tb_Schueler_HasTelephone] CHECK  (([dbo].[sf_CountTelephoneNumbers]([SchuelerID])>(0)))
+GO
+
+ALTER TABLE [dbo].[tb_Schueler] CHECK CONSTRAINT [CK_tb_Schueler_HasTelephone]
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Tragen Sie wenigstens eine Telefonnummer ein.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_Schueler', @level2type=N'CONSTRAINT',@level2name=N'CK_tb_Schueler_HasTelephone'
 GO
 
