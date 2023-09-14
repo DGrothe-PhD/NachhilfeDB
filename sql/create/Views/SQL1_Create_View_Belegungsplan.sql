@@ -1,7 +1,7 @@
 USE [Nachhilfe]
 GO
 
-/****** Object:  View [dbo].[Belegungsplan]    Script Date: 04.09.2023 17:59:25 ******/
+/****** Object:  View [dbo].[Belegungsplan]    Script Date: 14.09.2023 18:40:19 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -10,8 +10,8 @@ GO
 
 CREATE OR ALTER VIEW [dbo].[Belegungsplan]
 AS
-SELECT dbo.tb_Schueler.Name, dbo.tb_Schueler.Vorname, dbo.tb_Faecher.Bezeichnung, dbo.tb_Faecher.Stufe, dbo.tb_Fachbelegung.Anfangsdatum, dbo.tb_Fachbelegung.Enddatum, dbo.tb_Unterrichtsart.Bezeichnung AS Art, 
-                  dbo.tb_Unterrichtsart.OrtOderMedium
+SELECT dbo.tb_Schueler.Name, dbo.tb_Schueler.Vorname, dbo.tb_Schueler.Ort, YEAR(dbo.tb_Schueler.Geburtsdatum) AS Jahrgang, dbo.tb_Schueler.Klassenstufe, dbo.tb_Faecher.Bezeichnung, dbo.tb_Faecher.Stufe, 
+                  dbo.tb_Fachbelegung.Anfangsdatum, dbo.tb_Fachbelegung.Enddatum, dbo.tb_Unterrichtsart.Bezeichnung AS Art, dbo.tb_Unterrichtsart.OrtOderMedium
 FROM     dbo.tb_Schueler INNER JOIN
                   dbo.tb_Fachbelegung ON dbo.tb_Schueler.SchuelerID = dbo.tb_Fachbelegung.SchuelerID INNER JOIN
                   dbo.tb_Faecher ON dbo.tb_Fachbelegung.FachID = dbo.tb_Faecher.FachID INNER JOIN
@@ -94,11 +94,11 @@ Begin DesignProperties =
             Begin Extent = 
                Top = 6
                Left = 38
-               Bottom = 188
+               Bottom = 286
                Right = 205
             End
             DisplayFlags = 280
-            TopColumn = 0
+            TopColumn = 8
          End
          Begin Table = "tb_Fachbelegung"
             Begin Extent = 
@@ -241,11 +241,11 @@ Begin DesignProperties =
             Begin Extent = 
                Top = 6
                Left = 38
-               Bottom = 188
+               Bottom = 286
                Right = 205
             End
             DisplayFlags = 280
-            TopColumn = 0
+            TopColumn = 8
          End
          Begin Table = "tb_Fachbelegung"
             Begin Extent = 
@@ -337,4 +337,5 @@ BEGIN
 	EXEC sys.sp_updateextendedproperty @name=N'MS_DiagramPaneCount', @value=2 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Belegungsplan'
 END
 GO
+
 
