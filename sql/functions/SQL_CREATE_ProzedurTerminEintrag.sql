@@ -1,10 +1,13 @@
-USE Nachhilfe;
+USE [Nachhilfe]
 GO
 
+/****** Object:  StoredProcedure [dbo].[pr_TerminEintragen]    Script Date: 27.03.2024 15:01:31 ******/
 SET ANSI_NULLS ON
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
+
 -- =======================================================
 -- Author:		Daniela Grothe
 -- Create date: 17.03.2023
@@ -12,7 +15,7 @@ GO
 -- Bemerkung:   Auf Geschlechtsspezifika wird verzichtet.
 --              Es seien immer (m/w/d) gemeint.
 -- =======================================================
-CREATE OR ALTER PROCEDURE pr_TerminEintragen
+CREATE OR ALTER   PROCEDURE [dbo].[pr_TerminEintragen]
 	-- Add the parameters for the stored procedure here
 	@Vorname nvarchar(20),
 	@Name nvarchar(20),
@@ -20,6 +23,7 @@ CREATE OR ALTER PROCEDURE pr_TerminEintragen
 	@Datum date,
 	@Einheiten float,
 	@Uhrzeit time(0),
+	@Thema nvarchar(200) = NULL,
 	@Erfolg bit OUTPUT, -- geklappt oder nicht
 	@Feedback VARCHAR(MAX) OUTPUT -- Fehlermeldungen etc.
 AS
@@ -96,8 +100,8 @@ BEGIN
 	WHERE Bezeichnung = @Fach AND SchuelerID = @SchuelerID
 	
 	-- Datensatz eintragen, fertig.
-	INSERT INTO tb_Unterricht (Datum, FachbelegungID, Einheiten, Uhrzeit)
-	VALUES (@Datum, @FachbelegungID, @Einheiten, @Uhrzeit)
+	INSERT INTO tb_Unterricht (Datum, FachbelegungID, Einheiten, Uhrzeit, Thema)
+	VALUES (@Datum, @FachbelegungID, @Einheiten, @Uhrzeit, @Thema)
 
 	END TRY
 	BEGIN CATCH
@@ -110,3 +114,5 @@ BEGIN
 	END CATCH
 END
 GO
+
+
