@@ -1,7 +1,7 @@
 USE [Nachhilfe]
 GO
 
-/****** Object:  Table [dbo].[tb_Fachbelegung]    Script Date: 11.05.2023 20:51:15 ******/
+/****** Object:  Table [dbo].[tb_Fachbelegung]    Script Date: 09.04.2024 15:56:59 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -15,6 +15,8 @@ CREATE TABLE [dbo].[tb_Fachbelegung](
 	[Anfangsdatum] [date] NOT NULL,
 	[Enddatum] [date] NULL,
 	[UnterrichtsartID] [int] NULL,
+	[LaufzeitBis] [date] NULL,
+	[Wochenstunden] [float] NULL,
  CONSTRAINT [PK_tb_Fachbelegung] PRIMARY KEY CLUSTERED 
 (
 	[FachBelegID] ASC
@@ -54,4 +56,5 @@ GO
 
 ALTER TABLE [dbo].[tb_Fachbelegung] CHECK CONSTRAINT [CK_tb_Fachbelegung_Zeitfolge]
 GO
+
 
