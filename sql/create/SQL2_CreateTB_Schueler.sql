@@ -1,7 +1,7 @@
 USE [Nachhilfe]
 GO
 
-/****** Object:  Table [dbo].[tb_Schueler]    Script Date: 08.09.2023 21:37:59 ******/
+/****** Object:  Table [dbo].[tb_Schueler]    Script Date: 16.04.2024 18:07:39 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -26,11 +26,19 @@ CREATE TABLE [dbo].[tb_Schueler](
 	[EMail1] [varchar](30) NULL,
 	[EMail2] [varchar](30) NULL,
 	[Geburtsdatum] [date] NULL,
+	[SchultypID] [int] NULL,
  CONSTRAINT [PK_tb_Schueler] PRIMARY KEY CLUSTERED 
 (
 	[SchuelerID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tb_Schueler]  WITH CHECK ADD  CONSTRAINT [FK_tb_Schueler_tb_Schultypen] FOREIGN KEY([SchultypID])
+REFERENCES [dbo].[tb_Schultypen] ([SchultypID])
+GO
+
+ALTER TABLE [dbo].[tb_Schueler] CHECK CONSTRAINT [FK_tb_Schueler_tb_Schultypen]
 GO
 
 ALTER TABLE [dbo].[tb_Schueler]  WITH CHECK ADD  CONSTRAINT [CK_tb_Schueler_HasTelephone] CHECK  (([dbo].[sf_CountTelephoneNumbers]([SchuelerID])>(0)))
