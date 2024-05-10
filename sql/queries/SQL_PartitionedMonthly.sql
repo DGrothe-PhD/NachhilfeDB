@@ -6,6 +6,9 @@ soll nicht überhandnehmen.
 Source: https://stackoverflow.com/a/13681687/17677104
 ******/
 -- 
+USE [Nachhilfe]
+GO
+
 WITH Partitioned AS (
 	SELECT TOP (100) PERCENT [Datum], Einheiten AS EINH, [SchuelerIn], Bezeichnung,
 		  ROW_NUMBER() OVER (
