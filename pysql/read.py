@@ -5,6 +5,8 @@
 # while SSMS 2019 is running
 import numpy
 import pyodbc
+#---
+
 from colorthemes import colorthemes as ct
 
 # -- plotly imports
@@ -110,7 +112,8 @@ class monthlytable:
         print(self.titleline)
         cursor = self.conn.cursor()
         #
-        monthlyquery = f"SELECT TOP(100) PERCENT [Monat],[Jahr],[SchuelerIn],[Expr1] AS Einheiten" + \
+        monthlyquery = "SELECT TOP(100) PERCENT [Monat],[Jahr]," + \
+         "[SchuelerIn],[Absolviert],[Geplant],[Saldo]" + \
          " FROM [Nachhilfe].[dbo].[EinheitenMonatAlphabetisch]" + \
          f" WHERE Jahr = {year} AND Monat BETWEEN {m_from} AND {m_to}" + \
          " ORDER BY Monat ASC, SchuelerIn ASC;"
@@ -121,7 +124,9 @@ class monthlytable:
         allrows = cursor.fetchall()
         result = [{column_Names[index][0]: column for index, column in enumerate(value)} for value in allrows]
         
-        self.GivenLessonsDataFrame = pd.DataFrame(result, columns=["Monat", "Jahr", "SchuelerIn", "Einheiten"])
+        self.GivenLessonsDataFrame = pd.DataFrame(result, \
+         columns=["Monat", "Jahr", "SchuelerIn", "Absolviert", "Geplant"] \
+        )
         print(self.GivenLessonsDataFrame)
         
         with open(f"Monatsabrechnung_{year}_{m_from}-{m_to}.html", 'w', encoding='utf-8') as f:
@@ -136,7 +141,7 @@ class monthlytable:
     def makePlotGivenLessons(self):
         fig1 = px.bar(
             self.GivenLessonsDataFrame,
-            x="Monat", y="Einheiten", color="SchuelerIn",
+            x="Monat", y="Absolviert", color="SchuelerIn",
             barmode="stack",
             color_discrete_sequence=ct.bluegreenpalette
         )
@@ -166,21 +171,21 @@ class monthlytable:
         style = {'margin-right' : '0px'}
         )
 
+def run_dash():
+    app.run_server(debug = True)
 
 # Execution	  
 
 if __name__ == '__main__':
     mtt = monthlytable()
-    #mtt.read("tb_Fachbelegung")
     print("\n=====================\n\n")
-    #mtt.read("Belegungsplan")
-    #
-    mtt.SummaryGivenLessons( 2023, 1, 5)
+    mtt.SummaryGivenLessons( 2024, 1, 12)
     mtt.makePlotGivenLessons()
     #
-    mtt.ThisMonthLessons(2023, 5)
+    mtt.ThisMonthLessons(2024, 4)
     mtt.printMonthly()
     #
-    mtt.makePieChartSubjects(2023)
+    mtt.makePieChartSubjects(2024)
     mtt.formatter()
-    app.run_server(debug=True)
+    run_dash()
+    #print("finished ======")
