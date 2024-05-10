@@ -1,7 +1,7 @@
 USE [Nachhilfe]
 GO
 
-/****** Object:  Table [dbo].[tb_Schueler]    Script Date: 16.04.2024 18:07:39 ******/
+/****** Object:  Table [dbo].[tb_Schueler]    Script Date: 10.05.2024 10:20:52 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -27,11 +27,12 @@ CREATE TABLE [dbo].[tb_Schueler](
 	[EMail2] [varchar](30) NULL,
 	[Geburtsdatum] [date] NULL,
 	[SchultypID] [int] NULL,
+	[Bemerkungen] [nvarchar](max) NULL,
  CONSTRAINT [PK_tb_Schueler] PRIMARY KEY CLUSTERED 
 (
 	[SchuelerID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
 ALTER TABLE [dbo].[tb_Schueler]  WITH CHECK ADD  CONSTRAINT [FK_tb_Schueler_tb_Schultypen] FOREIGN KEY([SchultypID])
