@@ -11,7 +11,8 @@ Es wird auch die Unterrichtsart (online oder vor Ort) zu einem Auftrag gespeiche
 ## Unterricht
 * Geleistete Unterrichtsstunden können über die Prozedur `pr_TerminEintragen` eingetragen werden.
   Unterrichtstermine dürfen hierbei nicht in der Zukunft liegen.
-  
+* Für jeden Monat kann die geplante Stundenzahl vorab eingetragen und mit den tatsächlich geleisteten Einheiten verglichen werden.
+
 ## Bilanzen
 * Über die Funktion `sf_Jahreseinnahme` und `sf_Monatseinnahme` kann der Jahres- bzw. Monatsverdienst abgefragt werden.
   Der Preis pro Einheit ist als konstanten Wert vorauszusetzen.
