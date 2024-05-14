@@ -1,7 +1,7 @@
 USE [Nachhilfe]
 GO
 
-/****** Object:  Table [dbo].[tb_AnstehendeTermine]    Script Date: 27.06.2023 16:51:34 ******/
+/****** Object:  Table [dbo].[tb_AnstehendeTermine]    Script Date: 14.05.2024 13:54:23 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -15,6 +15,7 @@ CREATE TABLE [dbo].[tb_AnstehendeTermine](
 	[Einheiten] [float] NULL,
 	[Bemerkungen] [nvarchar](100) NULL,
 	[Uhrzeit] [time](0) NULL,
+	[WhInTagen] [int] NULL,
  CONSTRAINT [PK_tb_AnstehendeTermine] PRIMARY KEY CLUSTERED 
 (
 	[TerminID] ASC
