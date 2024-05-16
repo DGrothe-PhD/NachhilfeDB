@@ -4,16 +4,22 @@ Eine Datenbank für NachhilfelehrerInnen zur Buchführung über geleistete Nachh
 SchülerInnen können eins oder mehrere Schulfächer zugeordnet werden, die man unterrichtet.
 Es wird auch die Unterrichtsart (online oder vor Ort) zu einem Auftrag gespeichert.
 
-## Fachbelegung
+## Funktionalität
+
+### Terminplanung
+* Einmalige und wiederkehrende Termine eintragen
+* Terminübersicht abfragen (coming soon&hellip;)
+
+### Fachbelegung
 * Mehrere Aufträge desselben Schulfachs nacheinander sind möglich, aber nicht zeitgleich.
   So sind zum Beispiel wiederkehrende Kurzaufträge möglich.
 
-## Unterricht
+### Unterricht
 * Geleistete Unterrichtsstunden können über die Prozedur `pr_TerminEintragen` eingetragen werden.
   Unterrichtstermine dürfen hierbei nicht in der Zukunft liegen.
-* Für jeden Monat kann die geplante Stundenzahl vorab eingetragen und mit den tatsächlich geleisteten Einheiten verglichen werden.
+* Vorab kann für jeden Monat und SchülerIn geplante Stundenzahl vorab eingetragen und mit den tatsächlich geleisteten Einheiten verglichen werden.
 
-## Bilanzen
+### Bilanzen
 * Über die Funktion `sf_Jahreseinnahme` und `sf_Monatseinnahme` kann der Jahres- bzw. Monatsverdienst abgefragt werden.
   Der Preis pro Einheit ist als konstanten Wert vorauszusetzen.
 * Über Python werdend tabellarische und auch grafisch aufbereitete HTML-Ausgaben erzeugt.
