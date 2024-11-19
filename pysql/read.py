@@ -100,7 +100,7 @@ class monthlytable:
             df,
             values = "Einheiten",
             names = "Bezeichnung",
-            title = f"Anteil der Fächer im Jahr {year}",
+            title = f"&nbsp;&nbsp;&nbsp;&nbsp;Anteil der Fächer im Jahr {year}",
             color_discrete_sequence = ct.bluegreenpalette
         )
         self.plots.append(fig2)
@@ -113,7 +113,8 @@ class monthlytable:
         cursor = self.conn.cursor()
         #
         monthlyquery = "SELECT TOP(100) PERCENT [Monat],[Jahr]," + \
-         "[SchuelerIn],[Absolviert],[Geplant],[Saldo]" + \
+         "[Name] + ' ' + [Vorname] as SchuelerIn," + \
+         "[Absolviert], [Geplant], [Saldo]" + \
          " FROM [Nachhilfe].[dbo].[EinheitenMonatAlphabetisch]" + \
          f" WHERE Jahr = {year} AND Monat BETWEEN {m_from} AND {m_to}" + \
          " ORDER BY Monat ASC, SchuelerIn ASC;"
@@ -142,6 +143,7 @@ class monthlytable:
         fig1 = px.bar(
             self.GivenLessonsDataFrame,
             x="Monat", y="Absolviert", color="SchuelerIn",
+            title = f"Monatsstunden je SchülerIn im Jahr {self.year}",
             barmode="stack",
             color_discrete_sequence=ct.bluegreenpalette
         )
@@ -158,10 +160,6 @@ class monthlytable:
             html.H1(
             style={"font-family": "Calibri"},
             children=f"Monatsabrechnung für {self.year}"),
-
-            html.Div(children='''
-                Aufgeteilt nach Schuelern
-            '''),
 
             dcc.Graph(
                 id = f"nachhilfe-graph{idx}",
